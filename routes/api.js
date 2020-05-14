@@ -13,8 +13,8 @@ module.exports = function(app){
             newNote.id = notes.length - 1;
         }
         notes.push(newNote);
-        var strNotes = stringify(notes);
-        fs.writeFile("/db/db.json", strNotes, function(err){
+        var strNotes = JSON.stringify(notes);
+        fs.writeFile("db/db.json", strNotes, function(err){
             if (err) throw err;
             console.log("note was sent");
         });
@@ -24,10 +24,11 @@ module.exports = function(app){
         var noteId = req.params.id;
         // splice(notes);
         notes.splice(noteId, 1);
-        var strNotes = stringify(notes);
-        fs.writeFile("/db/db.json", strNotes, function(err){
+        var strNotes = JSON.stringify(notes);
+        fs.writeFile("db/db.json", strNotes, function(err){
             if (err) throw err;
             console.log("Note was removed");
+            
         });
     })
     
