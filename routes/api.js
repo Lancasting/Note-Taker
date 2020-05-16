@@ -10,7 +10,7 @@ module.exports = function (app) {
         if (notes === "") {
             newNote.id = 1;
         } else {
-            newNote.id = notes.length - 1;
+            newNote.id = notes.length;
         }
         notes.push(newNote);
         var strNotes = JSON.stringify(notes);
@@ -39,6 +39,7 @@ module.exports = function (app) {
 
     app.delete("/api/notes/:id", function (req, res) {
         var noteId = req.params.id;
+        console.log(noteId);
             notes.splice(noteId);
             var strNotes = JSON.stringify(notes);
             fs.writeFile("db/db.json", strNotes, function (err) {
