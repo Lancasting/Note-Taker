@@ -1,25 +1,12 @@
-var notes = require("../db/db");
-var fs = require("fs");
+const Store = require('../db/store')
 module.exports = function (app) {
     app.get("/api/notes", function (req, res) {
-        return res.json(notes);
+        Store.getNotes().then(notes => res.json(notes))
     });
 
     app.post("/api/notes", function (req, res) {
-        var newNote = req.body;
-        if (notes === "") {
-            newNote.id = 1;
-        } else {
-            newNote.id = notes.length;
-        }
-        notes.push(newNote);
-        var strNotes = JSON.stringify(notes);
-        fs.writeFile("db/db.json", strNotes, function (err) {
-            if (err) throw err;
-            console.log("Note was sent");
-            return newNote;
-        });
-        res.send("Updating notepage")
+        Store.addNote(req.body)
+            .then(note => res.json(note))
     });
 
     // app.delete("/api/notes/:id", function (req, res) {
@@ -39,13 +26,8 @@ module.exports = function (app) {
 
     app.delete("/api/notes/:id", function (req, res) {
         var noteId = req.params.id;
-        console.log(noteId);
-            notes.splice(noteId);
-            var strNotes = JSON.stringify(notes);
-            fs.writeFile("db/db.json", strNotes, function (err) {
-                if (err) throw err;
-                console.log("Note was removed");
-                res.send("Updating page with note removed");
-            });
+        Store.removeNote(noteId)
+            .then(() => res.json({ ok: true }))
+            .catch(err => res.status(500).json(err));
     });
 }
